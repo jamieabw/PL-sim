@@ -1,3 +1,5 @@
 from pl_predictor.models.single_poisson_dist import Single_Poisson_Distribution
+import pandas as pd
 
-print(Single_Poisson_Distribution.calculate(4, 4))
+df = pd.read_csv("./data/raw/final_matches.csv")
+print(df["team"])

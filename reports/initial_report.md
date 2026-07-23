@@ -10,9 +10,9 @@ This project aims to use historical data, along with statistical methods such as
 ---
 ### Steps 
 
-1) Clean the data sets to allow easy access to data which will be useful in adjusting the models used
+1) Clean the data sets to allow easy access to data which will be useful in adjusting the models used.
 
-2) Compute basic team strengths (such as attack and defence ratings)
+2) Compute basic team strengths (such as attack and defence ratings).
     - This will be done by computing home/away attack strength, home/away defence strength as ratios vs league averages, then using particular formulas to calculate expected scorelines.
 
 3) Replace the fixed formulas with poisson regression for higher realism, which can take into account home advantage, recency bias, etc.
