@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pl-predictor",            # any name you like for the project
+    name="pl-predictor",            
     version="0.1.0",
-    package_dir={"": "src"},        # << tell setuptools code is in src/
-    packages=find_packages("src"),  # << find all packages under src/
+    package_dir={"": "src"},       
+    packages=find_packages("src"),  
     python_requires=">=3.10",
 )
