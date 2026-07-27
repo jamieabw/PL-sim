@@ -1,14 +1,18 @@
 import pandas as pd
 
+DATA = "./datasets/raw/final_matches.csv"
+
+
+"""NEED TO CLEAN THE DATA TO ALLOW CORRECT MAPPING (FOR EXAMPLE, TOTTENHAM AND TOTTENHAM HOTSPUR ARE CONSIDERED DIFFERENT TEAMS)"""
+
 def get_league_averages() -> tuple:
     """gets the league average home and away goals per game from historical data.
 
     Returns:
         tuple: first element is average home goals per game, second element is average away goals per game.
     """    
-    data = "./data/raw/final_matches.csv"
     total_home_goals, total_away_goals = (0,0)
-    df = pd.read_csv(data)
+    df = pd.read_csv(DATA)
     c = 0
     for index, row in df.iterrows():
         if row["venue"] == "Home":
@@ -23,10 +27,45 @@ def get_team_names() -> list[str]:
     Returns:
         list[str]: a list of teams which appear in the dataset atleast once.
     """
-    data = "./data/raw/final_matches.csv"
     teams = {}
-    df = pd.read_csv(data)
+    df = pd.read_csv(DATA)
     for index, row, in df.iterrows():
-        if row["team"] not in teams.keys():
+        if row["team"] not in teams.keys() or row["opponent"] not in teams.keys():
             teams[row["team"]] = 0
     return teams.keys()
+
+
+def get_team_ratings(team_name: str) -> tuple:
+    """gets the attack and defence rating of a particular team
+
+    Args:
+        team_name (str): the name of the team you want the ratings of
+
+    Returns:
+        tuple: a tuple consisting of (attack rating HOME, defence rating HOME, attack rating AWAY, defence rating AWAY)
+    """
+    home_goals_scored: int = 0
+    home_goals_conceded: int = 0
+    away_goals_scored: int = 0
+    away_goals_conceded: int = 0
+    home_games: int = 0
+    away_games: int = 0
+    df = pd.read_csv(DATA)
+    for index, row in df.iterrows():
+        if row["team"] == team_name and row["venue"] == "Home": # home game for the specified team
+            home_games += 1
+            home_goals_scored += row["gf"]
+            home_goals_conceded += row["ga"]
+        if row["opponent"] == team_name and row["venue"] == "Home": # away game for the specified team
+            away_games += 1
+            away_goals_scored += row["ga"]
+            away_goals_conceded += row["gf"]
+
+    """print(f"average home goals: f{home_goals_scored / home_games}, {home_goals_conceded / home_games}")
+    print(f"average away goals: {away_goals_scored / away_games}. {away_goals_conceded / away_games}")"""
+    average_home_goals, average_away_goals = get_league_averages()
+    return ((home_goals_scored / home_games) / average_home_goals,
+             (home_goals_conceded / home_games) / average_away_goals, (away_goals_scored / away_games) / average_away_goals,
+               (away_goals_conceded / away_games) / average_home_goals)
+
+
