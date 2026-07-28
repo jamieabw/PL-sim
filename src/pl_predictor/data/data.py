@@ -1,9 +1,8 @@
 import pandas as pd
 
-DATA = "./datasets/raw/final_matches.csv"
+DATA = "./datasets/processed/final_matches_processed.csv"
 
 
-"""NEED TO CLEAN THE DATA TO ALLOW CORRECT MAPPING (FOR EXAMPLE, TOTTENHAM AND TOTTENHAM HOTSPUR ARE CONSIDERED DIFFERENT TEAMS)"""
 
 def get_league_averages() -> tuple:
     """gets the league average home and away goals per game from historical data.
@@ -31,6 +30,8 @@ def get_team_names() -> list[str]:
     df = pd.read_csv(DATA)
     for index, row, in df.iterrows():
         if row["team"] not in teams.keys() or row["opponent"] not in teams.keys():
+            if row["team"] == "team":
+                continue
             teams[row["team"]] = 0
     return teams.keys()
 
@@ -54,12 +55,14 @@ def get_team_ratings(team_name: str) -> tuple:
     for index, row in df.iterrows():
         if row["team"] == team_name and row["venue"] == "Home": # home game for the specified team
             home_games += 1
-            home_goals_scored += row["gf"]
-            home_goals_conceded += row["ga"]
+            home_goals_scored += int(row["gf"])
+            home_goals_conceded += int(row["ga"])
         if row["opponent"] == team_name and row["venue"] == "Home": # away game for the specified team
             away_games += 1
-            away_goals_scored += row["ga"]
-            away_goals_conceded += row["gf"]
+            away_goals_scored += int(row["ga"])
+            away_goals_conceded += int(row["gf"])
+    """print(home_games)
+    print(away_games)"""
 
     """print(f"average home goals: f{home_goals_scored / home_games}, {home_goals_conceded / home_games}")
     print(f"average away goals: {away_goals_scored / away_games}. {away_goals_conceded / away_games}")"""
@@ -69,3 +72,10 @@ def get_team_ratings(team_name: str) -> tuple:
                (away_goals_conceded / away_games) / average_home_goals)
 
 
+def output_all_team_ratings():
+    team_names = get_team_names()
+    print("TEAM NAME : (ATTACK RATING (H), DEFENCE RATING (H), ATTACK RATING (A), DEFENCE RATING (A))")
+    for team in team_names:
+        print(f"{team} : {get_team_ratings(team)}")
+
+output_all_team_ratings()
