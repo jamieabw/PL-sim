@@ -1,6 +1,8 @@
 import pandas as pd
 
 DATA = "./datasets/processed/final_matches_processed.csv"
+TIME_FACTOR = 1
+e = 2.71828
 
 
 
@@ -72,10 +74,23 @@ def get_team_ratings(team_name: str) -> tuple:
                (away_goals_conceded / away_games) / average_home_goals)
 
 
+def get_time_weighting(year: int) -> float:
+    """gets the time weighting to weight older matches less than newer ones.
+
+    Args:
+        year (int): the year the game took place
+
+    Returns:
+        _float_: the time weighting
+    """    
+    ...
+    return e ** (-TIME_FACTOR * 2024 - year)
+
+
 def output_all_team_ratings():
     team_names = get_team_names()
     print("TEAM NAME : (ATTACK RATING (H), DEFENCE RATING (H), ATTACK RATING (A), DEFENCE RATING (A))")
     for team in team_names:
         print(f"{team} : {get_team_ratings(team)}")
 
-output_all_team_ratings()
+#print(get_league_averages())
