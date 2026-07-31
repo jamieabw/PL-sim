@@ -73,17 +73,48 @@ def simulate_game(home_team_rating: tuple, away_team_rating: tuple, league_avera
     home, away = scorelines[index]
     return (home, away)
 
+def simulate_season(teams: dict) -> list:
+    """simulates an entire season and returns the final table (teams in descending order of points as a list)
+
+    Args:
+        teams (dict): a dict of team name : team DS
+
+    Returns:
+        list: an ordered list (Descending) of teams and the number of points they received over the simulation.
+    """
+    league_avg = get_league_averages()
+    # first testing with arsenal
+    #team = teams["Arsenal"]
+    for team in teams.values():
+        for opponent in teams.values():
+            if team == opponent:
+                continue
+            home_goals, away_goals = simulate_game(team.get_rating(), opponent.get_rating(), league_avg)
+            print(f"{team.get_name()} {home_goals} - {away_goals} {opponent.get_name()}")
+            if home_goals > away_goals:
+                team.points += 3
+            elif home_goals == away_goals:
+                team.points += 1
+                opponent.points += 1
+            else:
+                opponent.points += 3
+    table = [t for t in teams.values()]
+    table.sort(key=lambda te: te.points)
+
+    return reversed(table)
+
+
 
 """build_score_matrix(2.8345535445214587, 0.43235276054781063) # Arsenal vs Norwich City for testing purposes.
 get_scoreline_probabilities(build_score_matrix(2.8345535445214587, 0.43235276054781063))"""
 
-ARSENAL = (1.3135735938026274, 0.7467911318553092, 1.3146635550369505, 0.653418659481307)
+"""ARSENAL = (1.3135735938026274, 0.7467911318553092, 1.3146635550369505, 0.653418659481307)
 CITY = (1.7177500842034354, 0.6845585375340334, 1.47024504084014, 0.5456382620410913)
 
 league_avg = get_league_averages()
 for i in range(10):
     print(simulate_game(CITY, ARSENAL, league_avg)) # test CITY VS ARSENAL 10 times
-    """
+    
     (1, 2)
     (1, 1)
     (1, 3)
@@ -95,5 +126,4 @@ for i in range(10):
     (1, 2)
     (1, 3)
     """
-
 
