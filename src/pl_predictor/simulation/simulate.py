@@ -1,5 +1,5 @@
 from pl_predictor.models.single_poisson_dist import Single_Poisson_Distribution
-from pl_predictor.data.data import get_league_averages
+from pl_predictor.data.data import get_league_averages, LEAGUE_AVG
 import numpy as np
 def simulate_xg(home_team_rating: tuple, away_team_rating: tuple, league_averages: tuple) -> tuple:
     """gets the predicted xg for the game given the home team and away team's ratings.
@@ -82,7 +82,7 @@ def simulate_season(teams: dict) -> list:
     Returns:
         list: an ordered list (Descending) of teams and the number of points they received over the simulation.
     """
-    league_avg = get_league_averages()
+    league_avg = LEAGUE_AVG
     # first testing with arsenal
     #team = teams["Arsenal"]
     for team in teams.values():
@@ -90,7 +90,7 @@ def simulate_season(teams: dict) -> list:
             if team == opponent:
                 continue
             home_goals, away_goals = simulate_game(team.get_rating(), opponent.get_rating(), league_avg)
-            print(f"{team.get_name()} {home_goals} - {away_goals} {opponent.get_name()}")
+            #print(f"{team.get_name()} {home_goals} - {away_goals} {opponent.get_name()}")
             if home_goals > away_goals:
                 team.points += 3
             elif home_goals == away_goals:
@@ -101,7 +101,7 @@ def simulate_season(teams: dict) -> list:
     table = [t for t in teams.values()]
     table.sort(key=lambda te: te.points)
 
-    return reversed(table)
+    return list(reversed(table))
 
 
 

@@ -2,6 +2,7 @@ import pandas as pd
 
 DATA = "./datasets/processed/final_matches_processed.csv"
 TIME_FACTOR = 1
+LEAGUE_AVG = (1.5626315789473684, 1.3531578947368421)
 e = 2.71828
 
 
@@ -95,7 +96,7 @@ def get_team_rating(team_name: str) -> tuple:
     """
     home_games, home_goals_scored, home_goals_conceded = get_team_home_stats(team_name)
     away_games, away_goals_scored, away_goals_conceded = get_team_away_stats(team_name)
-    average_home_goals, average_away_goals = get_league_averages()
+    average_home_goals, average_away_goals = LEAGUE_AVG
     return ((home_goals_scored / home_games) / average_home_goals,
              (home_goals_conceded / home_games) / average_away_goals, (away_goals_scored / away_games) / average_away_goals,
                (away_goals_conceded / away_games) / average_home_goals)

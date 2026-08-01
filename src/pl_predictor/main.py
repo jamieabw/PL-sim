@@ -10,8 +10,18 @@ def get_teams() -> dict:
         teams[team] = Team(team, get_team_rating(team))
     return teams
 
-print(get_team_names())
-teams= get_teams()
-table = simulate_season(teams)
+teams = get_teams()
+counter = 0
+while True:
+    counter +=1
+    table = simulate_season(teams)
+    if table[0].get_name() == "Ipswich Town":
+        break
+    print(f"champion: {table[0].get_name()}")
+    for team in table:
+        team.reset_points()
+
+
 for team in table:
-    print(f"{team.get_name()} : {team.points}")
+    print(f"{team.get_name()} - {team.points}")
+print(counter)
