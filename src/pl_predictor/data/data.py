@@ -1,9 +1,8 @@
 import pandas as pd
-
+from math import e
 DATA = "./datasets/processed/final_matches_processed.csv"
-TIME_FACTOR = 1
+TIME_FACTOR = 0.2
 LEAGUE_AVG = (1.5626315789473684, 1.3531578947368421)
-e = 2.71828
 
 
 
@@ -56,9 +55,10 @@ def get_team_home_stats(team_name: str) -> tuple:
     df = pd.read_csv(DATA)
     for index, row in df.iterrows():
         if row["team"] == team_name and row["venue"] == "Home": # home game for the specified team
-            home_games += 1
-            home_goals_scored += int(row["gf"])
-            home_goals_conceded += int(row["ga"])
+            weighting = float(get_time_weighting(int(row["season"]))) # decay the effect depending on how old
+            home_games += weighting
+            home_goals_scored += int(row["gf"]) * weighting
+            home_goals_conceded += int(row["ga"]) * weighting
     return (home_games, home_goals_scored, home_goals_conceded)
 
 def get_team_away_stats(team_name: str) -> tuple:
@@ -76,9 +76,10 @@ def get_team_away_stats(team_name: str) -> tuple:
     df = pd.read_csv(DATA)
     for index, row in df.iterrows():
         if row["opponent"] == team_name and row["venue"] == "Home": # away game for the specified team
-            away_games += 1
-            away_goals_scored += int(row["ga"])
-            away_goals_conceded += int(row["gf"])
+            weighting = float(get_time_weighting(int(row["season"]))) # decay the effect depending on how old
+            away_games += weighting
+            away_goals_scored += int(row["ga"]) * weighting
+            away_goals_conceded += int(row["gf"]) * weighting
     return (away_games, away_goals_scored, away_goals_conceded)
 
 """def get_team_games_played(team_name: str) -> int:
@@ -112,7 +113,7 @@ def get_time_weighting(year: int) -> float:
         _float_: the time weighting
     """    
     ...
-    return e ** (-TIME_FACTOR * 2024 - year)
+    return e ** ((-TIME_FACTOR) * (2025 - year))
 
 
 def output_all_team_ratings():
@@ -123,3 +124,5 @@ def output_all_team_ratings():
 
 #print(get_league_averages())
 #output_all_team_ratings()
+
+#print(get_time_weighting(2021))

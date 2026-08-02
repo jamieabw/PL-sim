@@ -1,5 +1,6 @@
 from pl_predictor.models.single_poisson_dist import Single_Poisson_Distribution
 from pl_predictor.data.data import get_league_averages, LEAGUE_AVG
+from pl_predictor.simulation.dixon_coles_correction import tau
 import numpy as np
 def simulate_xg(home_team_rating: tuple, away_team_rating: tuple, league_averages: tuple) -> tuple:
     """gets the predicted xg for the game given the home team and away team's ratings.
@@ -30,7 +31,7 @@ def build_score_matrix(home_xG, away_xG) -> list[list]:
     for home in range(7):
         temp = []
         for away in range(7):
-            temp.append(Single_Poisson_Distribution.calculate(home_xG, home) * Single_Poisson_Distribution.calculate(away_xG, away))
+            temp.append(tau(home, away, home_xG, away_xG) * Single_Poisson_Distribution.calculate(home_xG, home) * Single_Poisson_Distribution.calculate(away_xG, away))
         score_matrix.append(temp)
     return score_matrix
 
@@ -48,6 +49,7 @@ def get_scoreline_probabilities(score_matrix: list[list]) -> tuple[list]:
         for home in range(7):
             probabilities.append(score_matrix[home][away])
     total = sum(probabilities)
+    #print(total)
     probabilities = [p / total for p in probabilities] # normalise to ensure they sum to 1
     scorelines = []
     for away in range(7):
