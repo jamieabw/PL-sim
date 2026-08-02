@@ -34,7 +34,7 @@ def get_team_names() -> list[str]:
         if row["team"] not in teams.keys() or row["opponent"] not in teams.keys():
             if row["team"] == "team":
                 continue
-            if row["team"] in "West Bromwich Albion Watford Southampton Sheffield United Luton Town Norwich City Leicester City": # temp for testing purposes.
+            if row["team"] in "Ipswich Town Watford Southampton Sheffield United Luton Town Norwich City Leicester City": # temp for testing purposes.
                 continue
             teams[row["team"]] = 0
     return teams.keys()

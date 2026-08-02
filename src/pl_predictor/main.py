@@ -12,14 +12,18 @@ def get_teams() -> dict:
 
 teams = get_teams()
 counter = 0
-while counter < 10:
+"""while counter < 10:
     counter +=1
     table = simulate_season(teams)
-    """if table[0].get_name() == "Arsenal":
-        break"""
+    if table[0].get_name() == "Arsenal":
+        break
     print(f"champion: {table[0].get_name()}")
     for team in table:
-        team.reset_points()
+        team.reset_points()"""
+
+table = simulate_season(teams)
+for idx, team in enumerate(table):
+    print(f"{idx + 1}) {team.get_name()} : {team.points} points")
 
 
 """for team in table:
