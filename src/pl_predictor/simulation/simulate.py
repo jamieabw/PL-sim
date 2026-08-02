@@ -89,7 +89,7 @@ def simulate_season(teams: dict) -> list:
     #team = teams["Arsenal"]
     for team in teams.values():
         for opponent in teams.values():
-            if team == opponent:
+            if team.get_name() == opponent.get_name():
                 continue
             home_goals, away_goals = simulate_game(team.get_rating(), opponent.get_rating(), league_avg)
             #print(f"{team.get_name()} {home_goals} - {away_goals} {opponent.get_name()}")
@@ -100,10 +100,14 @@ def simulate_season(teams: dict) -> list:
                 opponent.points += 1
             else:
                 opponent.points += 3
+            team.goals_scored += home_goals
+            opponent.goals_scored += away_goals
+            team.goals_conceded += away_goals
+            opponent.goals_conceded += home_goals
     table = [t for t in teams.values()]
-    table.sort(key=lambda te: te.points)
+    table.sort(reverse=True)
 
-    return list(reversed(table))
+    return table
 
 
 
