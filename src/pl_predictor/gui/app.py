@@ -8,7 +8,7 @@ class App(Tk):
         self.geometry("800x800")
         self.resizable(False, False)
         self.container = Frame(self)
-        self.container.pack(fill="both", expand=True)
+        self.container.grid(row=0, column=0)
         self.frames = {}
 
         for Page in (MainScreen, ResultsScreen):

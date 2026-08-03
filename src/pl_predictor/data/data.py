@@ -3,6 +3,9 @@ from math import e
 DATA = "./datasets/processed/final_matches_processed.csv"
 TIME_FACTOR = 0.2
 LEAGUE_AVG = (1.5626315789473684, 1.3531578947368421)
+teams = ['Arsenal', 'Aston Villa', 'Bournemouth', 'Brentford', 'Brighton And Hove Albion', 'Burnley', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham', 'Ipswich Town',
+          'Leeds United', 'Leicester City', 'Liverpool', 'Luton Town', 'Manchester City', 'Manchester United', 'Newcastle United', 'Norwich City', 'Nottingham Forest',
+            'Sheffield United', 'Southampton', 'Tottenham Hotspur', 'Watford', 'West Bromwich Albion', 'West Ham United', 'Wolverhampton Wanderers']
 
 
 
@@ -34,8 +37,8 @@ def get_team_names() -> list[str]:
         if row["team"] not in teams.keys() or row["opponent"] not in teams.keys():
             if row["team"] == "team":
                 continue
-            if row["team"] in "Ipswich Town Watford Southampton Sheffield United Luton Town Norwich City Leicester City": # temp for testing purposes.
-                continue
+            """if row["team"] in "Ipswich Town Watford Southampton Sheffield United Luton Town Norwich City Leicester City": # temp for testing purposes.
+                continue"""
             teams[row["team"]] = 0
     return teams.keys()
 
@@ -122,7 +125,3 @@ def output_all_team_ratings():
     for team in team_names:
         print(f"{team} : {get_team_rating(team)}")
 
-#print(get_league_averages())
-#output_all_team_ratings()
-
-#print(get_time_weighting(2021))
