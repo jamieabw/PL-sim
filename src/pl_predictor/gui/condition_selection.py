@@ -25,3 +25,25 @@ class ConditionSelectionFrame(Frame):
         selected = self.relegation_option.curselection()
         if len(selected) > 3:
             self.relegation_option.selection_clear(selected[-1]) # clear the previous selection if more than 3 selected
+
+    def get_selected_champion(self) -> str:
+        """returns the team which was selected as the champion.
+
+        Returns:
+            str: team to simulate until theyre champion
+        """        
+        return self.champion_condition.get()
+
+    def get_relegated_teams(self) -> list[str]:
+        """gets the team names of those selected for relegation
+
+        Returns:
+            list[str]: teams to simulate until relegated.
+        """  
+        return [self.relegation_option.get(i) for i in self.relegation_option.curselection()]
+
+    def get_max_sims(self) -> int:
+        try:
+            return int(self.max_sims.get())
+        except:
+            print("ERROR")

@@ -14,7 +14,7 @@ teams = get_teams()
 
 while True:
     table = simulate_season(teams)
-    if table[19].points < 10:
+    if table[19].points == 0:
         break
     for team in table:
         team.reset()
