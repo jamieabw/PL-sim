@@ -10,7 +10,6 @@ from pl_predictor.models.team import Team
 class MainScreen(Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
-        Button(self, text="Switch frame", command=lambda : controller.show_frame(ResultsScreen)).grid(row=1, column=1) # test
         self.team_selection_frame = TeamSelectionFrame(self)
         self.team_selection_frame.grid(row=0, column=0, rowspan=3)
         self.condition_selection_frame = ConditionSelectionFrame(self)
@@ -25,8 +24,15 @@ class MainScreen(Frame):
         for i in range(max_sims):
             print(f"Simulation: {i+1}")
             table = simulate_season(team_ratings)
-            if champion != "Any" and champion == table[0].get_name():
-                break
+            if champion == "Any" or champion == table[0].get_name():
+                print(f"champion: {table[0].get_name()}")
+                # this is probably not the best way to do this, temporarily here.
+                flag = True
+                for j in range(len(relegated_teams)):
+                    if relegated_teams[j] not in f"{table[-1].get_name()} {table[-2].get_name()} {table[-3].get_name()}":
+                        flag = False
+                if flag:
+                    break
             for team in table:
                 team.reset()
         print([(t.get_name(), t.points) for t in table])

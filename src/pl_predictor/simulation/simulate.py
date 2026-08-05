@@ -2,6 +2,9 @@ from pl_predictor.models.single_poisson_dist import Single_Poisson_Distribution
 from pl_predictor.data.data import get_league_averages, LEAGUE_AVG
 from pl_predictor.simulation.dixon_coles_correction import tau
 import numpy as np
+
+distribution_cache = {} # should massively speed up simulation times after initial simulation.
+
 def simulate_xg(home_team_rating: tuple, away_team_rating: tuple, league_averages: tuple) -> tuple:
     """gets the predicted xg for the game given the home team and away team's ratings.
 
@@ -35,7 +38,7 @@ def build_score_matrix(home_xG, away_xG) -> list[list]:
         score_matrix.append(temp)
     return score_matrix
 
-def get_scoreline_probabilities(score_matrix: list[list]) -> tuple[list]:
+def get_scoreline_probabilities(home_xG: float, away_xG) -> tuple[list]:
     """gets the probabilites associated with their scorelines
 
     Args:
@@ -46,8 +49,10 @@ def get_scoreline_probabilities(score_matrix: list[list]) -> tuple[list]:
     """
     probabilities = []
     for away in range(7):
+        away_probability = Single_Poisson_Distribution.calculate(away_xG, away)
         for home in range(7):
-            probabilities.append(score_matrix[home][away])
+            home_probability = Single_Poisson_Distribution.calculate(home_xG, home)
+            probabilities.append(tau(home, away, home_xG, away_xG) * home_probability * away_probability)
     total = sum(probabilities)
     #print(total)
     probabilities = [p / total for p in probabilities] # normalise to ensure they sum to 1
@@ -68,9 +73,13 @@ def simulate_game(home_team_rating: tuple, away_team_rating: tuple, league_avera
 
     Returns:
         tuple: (home goals, away goals)
-    """    
-    home_xG, away_xG = simulate_xg(home_team_rating, away_team_rating, league_averages)
-    probabilities, scorelines = get_scoreline_probabilities(build_score_matrix(home_xG, away_xG))
+    """
+    key = (home_team_rating, away_team_rating)
+    if key not in distribution_cache:
+        home_xG, away_xG = simulate_xg(home_team_rating, away_team_rating, league_averages)
+        probabilities, scorelines = get_scoreline_probabilities(home_xG, away_xG)
+        distribution_cache[key] = (probabilities, scorelines)
+    probabilities, scorelines = distribution_cache[key]
     index = np.random.choice(len(scorelines), p=probabilities)
     home, away = scorelines[index]
     return (home, away)
