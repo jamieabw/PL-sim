@@ -2,7 +2,7 @@ from tkinter import Tk, Button, Label, Frame
 from pl_predictor.gui.main_screen import MainScreen
 from pl_predictor.gui.results_screen import ResultsScreen
 
-# TODO: add min champion points condition, max relegation points condition, flash screen for simulations, league table screen, store match results.
+# TODO: add max relegation points condition, flash screen for simulations, league table screen, store match results.
 
 class App(Tk):
     def __init__(self):

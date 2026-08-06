@@ -10,16 +10,20 @@ class ConditionSelectionFrame(Frame):
         team_options.append("Any")
         self.champion_option = OptionMenu(self, self.champion_condition, *team_options)
         self.champion_option.grid(row=0, column=1)
+        self.champion_min_points = StringVar(self, 0)
+        self.champion_min_points_option = Entry(self, textvariable=self.champion_min_points)
         Label(self, text="Champion").grid(row=0, column=0)
         Label(self, text="Maximum simulations").grid(row=1, column=0)
+        Label(self, text="Minimum champion points").grid(row=2, column=0)
         self.max_sims_option = Entry(self, textvariable=self.max_sims)
         self.max_sims_option.grid(row=1, column=1)
+        self.champion_min_points_option.grid(row=2, column=1)
         self.relegation_option = Listbox(self, selectmode="multiple")
         for team in team_options:
             self.relegation_option.insert("end", team)
         self.relegation_option.bind("<<ListboxSelect>>", self.limit_selection)
-        self.relegation_option.grid(row=2, column=1)
-        Label(self, text="Relegation (MAX 3)").grid(row=2, column=0)
+        self.relegation_option.grid(row=3, column=1)
+        Label(self, text="Relegation (MAX 3)").grid(row=3, column=0)
 
     def limit_selection(self, event):
         selected = self.relegation_option.curselection()
@@ -47,3 +51,6 @@ class ConditionSelectionFrame(Frame):
             return int(self.max_sims.get())
         except:
             print("ERROR")
+
+    def get_min_champ_points(self) -> int:
+        return int(self.champion_min_points_option.get())
