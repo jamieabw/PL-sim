@@ -26,8 +26,11 @@ class App(Tk):
         Args:
             screen (_type_): class of tkinter page to switch to
         """        
-        frame = self.frames[screen]
-        frame.tkraise()
+        self.frame = self.frames[screen]
+        self.frame.tkraise()
+
+    def main_screen(self):
+        self.show_frame(MainScreen)
 
 
 

@@ -1,4 +1,4 @@
-from tkinter import Frame, Button, Checkbutton, messagebox
+from tkinter import Frame, Button, Checkbutton, messagebox, Toplevel, Label
 from pl_predictor.gui.results_screen import ResultsScreen
 from pl_predictor.data.data import get_team_names
 from pl_predictor.gui.team_selection import TeamSelectionFrame
@@ -10,6 +10,8 @@ from pl_predictor.models.team import Team
 class MainScreen(Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+        self.parent = parent
+        self.controller = controller
         self.team_selection_frame = TeamSelectionFrame(self)
         self.team_selection_frame.grid(row=0, column=0, rowspan=3)
         self.condition_selection_frame = ConditionSelectionFrame(self)
@@ -34,13 +36,17 @@ class MainScreen(Frame):
 
     def start_simulation(self):
         league_teams, champion, relegated_teams, max_sims, min_champ_points = self.get_simulation_conditions()
+        self.sim_label = Label(self, text="Starting simulation")
+        self.sim_label.grid(row=4, column=3)
         if self.check_simulation(league_teams, champion, relegated_teams, max_sims, min_champ_points):
             messagebox.showerror(title="Simulation Error", message="The conditions selected are not compatible with the teams selected. Please change conditions or team selection.")
             return
         team_ratings = {}
         for team in league_teams:
             team_ratings[team] = Team(team, get_team_rating(team))
-        print(self.run_simulations(league_teams, champion, relegated_teams, max_sims, min_champ_points, team_ratings))
+        table = self.run_simulations(champion, relegated_teams, max_sims, min_champ_points, team_ratings)
+        self.controller.show_frame(ResultsScreen)
+        self.controller.frame.display_teams(table)
         
 
     def run_simulations(self, champion: str, relegated_teams: list[str], max_sims: int, min_champ_points: int, team_ratings: dict) -> list[Team]:
@@ -57,7 +63,7 @@ class MainScreen(Frame):
             list[Team]: the ordered league table of either the closest simulation (when implemented) or the simulation where conditions are met
         """        
         for i in range(max_sims):
-            print(f"Simulation: {i+1}")
+            self.sim_label.config(text=f"Simulation: {i+1}") # doesnt work rn
             table = simulate_season(team_ratings)
             if (champion == "Any" or champion == table[0].get_name()) and table[0].points >= min_champ_points:
                 print(f"champion: {table[0].get_name()}")
