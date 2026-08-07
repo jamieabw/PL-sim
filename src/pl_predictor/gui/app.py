@@ -31,7 +31,3 @@ class App(Tk):
 
     def main_screen(self):
         self.show_frame(MainScreen)
-
-
-
-gui = App()

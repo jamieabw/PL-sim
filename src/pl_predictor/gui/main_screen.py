@@ -64,6 +64,7 @@ class MainScreen(Frame):
         """        
         for i in range(max_sims):
             self.sim_label.config(text=f"Simulation: {i+1}") # doesnt work rn
+            print(i+1)
             table = simulate_season(team_ratings)
             if (champion == "Any" or champion == table[0].get_name()) and table[0].points >= min_champ_points:
                 print(f"champion: {table[0].get_name()}")
@@ -74,9 +75,11 @@ class MainScreen(Frame):
                         flag = False
                 if flag:
                     break
-                for team in table:
-                    team.reset()
-        return [(t.get_name(), t.points) for t in table]
+            print(f"champion: {table[0].get_name()}")
+            #print((t.get_name(), t.points) for t in table)
+            for team in table:
+                team.reset()
+        return [t for t in table]
 
 
 
