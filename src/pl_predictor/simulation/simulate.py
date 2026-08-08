@@ -103,12 +103,14 @@ def simulate_season(teams: dict) -> list:
             home_goals, away_goals = simulate_game(team.get_rating(), opponent.get_rating(), league_avg)
             #print(f"{team.get_name()} {home_goals} - {away_goals} {opponent.get_name()}")
             if home_goals > away_goals:
-                team.points += 3
+                team.wins += 1
+                opponent.losses += 1
             elif home_goals == away_goals:
-                team.points += 1
-                opponent.points += 1
+                team.draws += 1
+                opponent.draws += 1
             else:
-                opponent.points += 3
+                opponent.wins += 1
+                team.losses += 1
             team.goals_scored += home_goals
             opponent.goals_scored += away_goals
             team.goals_conceded += away_goals

@@ -31,3 +31,6 @@ class App(Tk):
 
     def main_screen(self):
         self.show_frame(MainScreen)
+
+    def show_results(self):
+        self.show_frame(ResultsScreen)
