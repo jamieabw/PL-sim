@@ -12,6 +12,8 @@ class App(Tk):
         self.resizable(False, False)
         self.container = Frame(self)
         self.container.grid(row=0, column=0)
+        self.title("Premier League Simulator")
+        self.iconbitmap("./assets/icon.ico")
         self.frames = {}
 
         for Page in (MainScreen, ResultsScreen, MatchResultsScreen):
