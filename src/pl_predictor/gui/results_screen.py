@@ -8,7 +8,8 @@ class ResultsScreen(Frame):
         self.controller = controller
 
 
-    def display_teams(self, table):
+    def display_teams(self, data):
+        table, self.match_results = data
         self.league_table = LeagueTableFrame(self)
         self.league_table.grid(row=0, column=0, columnspan=5)
         Label(self.league_table, text=f"POS").grid(row=0, column=0)
@@ -32,7 +33,15 @@ class ResultsScreen(Frame):
             Label(self.league_table, text=team.goals_scored).grid(row=i+1, column=7)
             Label(self.league_table, text=team.goals_conceded).grid(row=i+1, column=8)
             Label(self.league_table, text=team.goals_scored - team.goals_conceded).grid(row=i+1, column=9)
+            Button(self.league_table, text="View Results", command=lambda team=team: self.display_match_results(team.get_name())).grid(row=i+1, column=10)
         Button(self, text="Back", command=lambda: self.clear_screen()).grid(row=1, column=1)
+
+    def display_match_results(self, team):
+        matches_wanted = {}
+        for match in self.match_results.keys():
+            if team in match:
+                matches_wanted[match] = self.match_results[match]
+        self.controller.show_match_results(matches_wanted)
 
 
     def clear_screen(self):
@@ -40,32 +49,3 @@ class ResultsScreen(Frame):
             widget.destroy()
         self.controller.main_screen()
         
-
-
-
-    """def display_teams(self, table):
-        self.grid_columnconfigure(0, weight=1)
-        self.league_table = LeagueTableFrame(self)
-        self.league_table.grid(row=0, column=0, sticky="ew")
-        self.league_table.grid(row=0, column=0, sticky="nsew")
-        self.grid_columnconfigure(0, weight=1)
-        self.league_table.grid_columnconfigure(0, weight=1)
-        for i, team in enumerate(table):
-            row = Frame(self.league_table, bg="white")
-            row.grid_columnconfigure(0, minsize=40)
-            row.grid_columnconfigure(1, minsize=250)
-            row.grid_columnconfigure(2, minsize=60)
-            row.grid_columnconfigure(3, minsize=60)
-            row.grid_columnconfigure(4, minsize=60)
-            row.grid_columnconfigure(5, minsize=60)
-            row.grid(row=i, column=0, sticky="ew")
-            row.grid_columnconfigure(1, weight=1)
-
-            Label(row, text=f"{i+1})").grid(row=0, column=0, padx=10)
-            Label(row, text=team.get_name(), anchor="w").grid(row=0, column=1, sticky="ew")
-            Label(row, text=team.points).grid(row=0, column=2, padx=10)
-            Label(row, text=team.goals_scored).grid(row=0, column=3, padx=10)
-            Label(row, text=team.goals_conceded).grid(row=0, column=4, padx=10)
-            Label(row, text=team.goals_scored - team.goals_conceded).grid(row=0, column=5, padx=10)
-        Button(self, text="Back", command=lambda: self.controller.main_screen()).grid(column=6, row=10)"""
-

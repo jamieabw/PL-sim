@@ -89,7 +89,7 @@ class MainScreen(Frame):
         for i in range(max_sims):
             if i % 5 == 0:
                 self.progress_queue.put(("progress", i+1))
-            table = simulate_season(team_ratings)
+            table, match_results = simulate_season(team_ratings)
             if (champion == "Any" or champion == table[0].get_name()) and table[0].get_points() >= min_champ_points:
                 print(f"champion: {table[0].get_name()}")
                 # this is probably not the best way to do this, temporarily here.
@@ -103,7 +103,7 @@ class MainScreen(Frame):
             #print((t.get_name(), t.points) for t in table)
             for team in table:
                 team.reset()
-        self.progress_queue.put(("complete", table))
+        self.progress_queue.put(("complete", (table, match_results)))
 
 
 

@@ -1,6 +1,7 @@
 from tkinter import Tk, Button, Label, Frame
 from pl_predictor.gui.main_screen import MainScreen
 from pl_predictor.gui.results_screen import ResultsScreen
+from pl_predictor.gui.match_results_screen import MatchResultsScreen
 
 # TODO: add max relegation points condition, flash screen for simulations, league table screen, store match results.
 
@@ -13,7 +14,7 @@ class App(Tk):
         self.container.grid(row=0, column=0)
         self.frames = {}
 
-        for Page in (MainScreen, ResultsScreen):
+        for Page in (MainScreen, ResultsScreen, MatchResultsScreen):
             frame = Page(self.container, self)
             self.frames[Page] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -34,3 +35,7 @@ class App(Tk):
 
     def show_results(self):
         self.show_frame(ResultsScreen)
+
+    def show_match_results(self, match_results):
+        self.show_frame(MatchResultsScreen)
+        self.frame.display_match_results(match_results)
