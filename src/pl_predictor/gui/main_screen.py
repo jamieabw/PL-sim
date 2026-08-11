@@ -56,7 +56,7 @@ class MainScreen(Frame):
             return
         self.sim_button.config(state="disabled")
         self.sim_thread = threading.Thread(target=self.run_simulations, args=(league_teams, champion, relegated_teams, max_sims, min_champ_points), daemon=True)
-        self.sim_label.config(text="Starting Simulation...")
+        self.sim_label.config(text="Starting Simulation...", fg="black")
         self.sim_thread.start()
         self.after(50, self.check_progress)
         #table = self.run_simulations(champion, relegated_teams, max_sims, min_champ_points, team_ratings)
@@ -71,6 +71,7 @@ class MainScreen(Frame):
                 self.sim_label.config(text=f"Simulation: {data}")
             elif message_title == "complete":
                 self.sim_button.config(state="normal")
+                self.sim_cancel_button.config(state="disabled")
                 self.controller.show_frame(ResultsScreen)
                 self.controller.frame.display_teams(data)
                 return
@@ -78,6 +79,10 @@ class MainScreen(Frame):
                 self.sim_button.config(state="normal")
                 self.sim_cancel_button.config(state="disabled")
                 self.sim_label.config(text="Simulation Cancelled.")
+            elif message_title == "failure":
+                self.sim_button.config(state="normal")
+                self.sim_cancel_button.config(state="disabled")
+                self.sim_label.config(text="No simulations found.", fg="red")
         except queue.Empty:
             pass
         self.after(10, self.check_progress)
@@ -112,7 +117,8 @@ class MainScreen(Frame):
                     if relegated_teams[j] not in f"{table[-1].get_name()} {table[-2].get_name()} {table[-3].get_name()}":
                         flag = False
                 if flag:
-                    break
+                    self.progress_queue.put(("complete", (table, match_results)))
+                    return
             if self.cancel_event.is_set():
                 self.progress_queue.put(("cancelled", None))
                 return
@@ -120,7 +126,7 @@ class MainScreen(Frame):
             #print((t.get_name(), t.points) for t in table)
             for team in table:
                 team.reset()
-        self.progress_queue.put(("complete", (table, match_results)))
+        self.progress_queue.put(("failure", None))
 
 
 
